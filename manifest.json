@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Seasonal Spark",
+  "version": "1.0",
+  "description": "Adds seasonal effects and uplifting tips to your browser.",
+  "permissions": ["storage", "activeTab", "scripting"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup/popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content/contentScript.js"]
+    }
+  ]
+}
