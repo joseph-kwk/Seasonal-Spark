@@ -172,8 +172,40 @@ function applySeasonalEffects() {
 
             // Show a seasonal tip
             showTip(season);
+        } else {
+            console.log("Seasonal effects are disabled");
         }
     });
+}
+
+// Listen for changes to the storage (when toggle is switched)
+chrome.storage.onChanged.addListener((changes, namespace) => {
+    if (namespace === 'sync' && changes.effectsEnabled) {
+        if (!changes.effectsEnabled.newValue) {
+            // Effects disabled - remove all effects
+            removeAllEffects();
+        } else {
+            // Effects enabled - reload the page to show effects
+            location.reload();
+        }
+    }
+});
+
+// Function to remove all seasonal effects
+function removeAllEffects() {
+    // Remove all leaf/snowflake elements
+    const effects = document.querySelectorAll('div[style*="position: fixed"]');
+    effects.forEach(el => {
+        if (el.innerHTML.match(/🍂|❄️|🌸|☀️/)) {
+            el.remove();
+        }
+    });
+    
+    // Remove tip boxes
+    const tips = document.querySelectorAll('.seasonal-tip');
+    tips.forEach(tip => tip.remove());
+    
+    console.log("Seasonal effects removed");
 }
 
 applySeasonalEffects();
