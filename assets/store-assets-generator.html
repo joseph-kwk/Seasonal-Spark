@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Seasonal Spark - Store Assets Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 { 
+            color: #333; 
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .asset-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .asset-section h2 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .asset-preview {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        canvas {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 100%;
+            height: auto;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        .info-box {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .info-box h4 {
+            margin-top: 0;
+            color: #1976d2;
+        }
+        .copy-text {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        .copy-btn {
+            background: #4caf50;
+            padding: 8px 16px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .copy-btn:hover {
+            background: #45a049;
+        }
+        .checklist {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #ffc107;
+        }
+        .checklist h3 {
+            margin-top: 0;
+            color: #856404;
+        }
+        .checklist ul {
+            margin: 10px 0;
+        }
+        .checklist li {
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌟 Seasonal Spark - Store Assets Generator</h1>
+        <p class="subtitle">Create all the promotional images needed for Chrome Web Store</p>
+
+        <!-- Small Tile -->
+        <div class="asset-section">
+            <h2>📱 Small Promotional Tile (440x280px)</h2>
+            <p>This appears in the Chrome Web Store search results and category pages.</p>
+            <div class="asset-preview">
+                <canvas id="smallTile" width="440" height="280"></canvas>
+                <button onclick="downloadAsset('smallTile', 'promotional-tile-440x280.png')">Download Small Tile</button>
+            </div>
+        </div>
+
+        <!-- Screenshot 1 -->
+        <div class="asset-section">
+            <h2>📸 Screenshot 1 (1280x800px)</h2>
+            <p>Shows the extension in action with fall effects.</p>
+            <div class="asset-preview">
+                <canvas id="screenshot1" width="1280" height="800"></canvas>
+                <button onclick="downloadAsset('screenshot1', 'screenshot-1-1280x800.png')">Download Screenshot 1</button>
+            </div>
+            <div class="info-box">
+                <h4>💡 Pro Tip for Real Screenshots:</h4>
+                <p>Take actual screenshots of your extension working on popular websites (Google, Wikipedia, etc.) and add text overlays explaining features.</p>
+            </div>
+        </div>
+
+        <!-- Marquee -->
+        <div class="asset-section">
+            <h2>🎯 Marquee Banner (1400x560px) - Optional</h2>
+            <p>Used if your extension gets featured in the Chrome Web Store.</p>
+            <div class="asset-preview">
+                <canvas id="marquee" width="1400" height="560"></canvas>
+                <button onclick="downloadAsset('marquee', 'marquee-1400x560.png')">Download Marquee</button>
+            </div>
+        </div>
+
+        <!-- Store Listing Copy -->
+        <div class="asset-section">
+            <h2>📝 Store Listing Copy</h2>
+            
+            <h3>Short Description (132 characters max)</h3>
+            <div class="copy-text">
+                Bring seasonal magic to your browser with beautiful effects and uplifting tips that change with the seasons.
+                <button class="copy-btn" onclick="copyText(this.previousSibling)">Copy</button>
+            </div>
+
+            <h3>Detailed Description</h3>
+            <div class="copy-text" style="white-space: pre-wrap;">🌟 Seasonal Spark - Transform Your Browsing Experience
+
+Seasonal Spark adds beautiful, non-intrusive seasonal effects to every webpage you visit, creating a more delightful and mindful browsing experience.
+
+✨ KEY FEATURES:
+• 🍂 Automatic Seasonal Effects - Beautiful animations that match the current season
+  - Fall: Drifting autumn leaves
+  - Winter: Gentle snowflakes
+  - Spring: Blooming flowers
+  - Summer: Bright sunshine
+
+• 💡 Uplifting Seasonal Tips - Mindful reminders and positive messages
+• ⚙️ Easy Toggle Control - Turn effects on/off with one click
+• ⏰ Smart Intervals - Effects appear periodically, never overwhelming
+• 🎨 Non-Intrusive Design - Doesn't interfere with page content or interaction
+• 💾 Remembers Your Preferences - Settings saved automatically
+
+🎯 PERFECT FOR:
+• Anyone who wants to add a touch of seasonal joy to their daily browsing
+• People who appreciate mindful moments throughout their day
+• Those looking for a cozy, aesthetic browser experience
+
+🔒 PRIVACY:
+• No data collection
+• No tracking
+• Works completely offline
+• All settings stored locally
+
+🌍 SEASONS DETECTED:
+• Spring: March - May
+• Summer: June - August
+• Fall: September - November  
+• Winter: December - February
+
+Made with ❤️ to bring seasonal joy to your browsing experience.
+
+---
+Got feedback or ideas? We'd love to hear from you!
+                <button class="copy-btn" onclick="copyText(this.previousSibling)">Copy</button>
+            </div>
+
+            <h3>Category</h3>
+            <p><strong>Recommended:</strong> "Fun" or "Productivity"</p>
+        </div>
+
+        <!-- Checklist -->
+        <div class="checklist">
+            <h3>✅ Chrome Web Store Submission Checklist</h3>
+            <ul>
+                <li>☐ Extension icon (128x128px) - Already done! ✓</li>
+                <li>☐ Small promotional tile (440x280px)</li>
+                <li>☐ At least 1 screenshot (up to 5 recommended)</li>
+                <li>☐ Short description (132 chars)</li>
+                <li>☐ Detailed description</li>
+                <li>☐ Category selection</li>
+                <li>☐ Privacy policy (if collecting data - not needed for you!)</li>
+                <li>☐ One-time developer registration fee: $5 USD</li>
+                <li>☐ Test extension thoroughly before submission</li>
+            </ul>
+        </div>
+
+        <div class="info-box">
+            <h4>🚀 Ready to Publish?</h4>
+            <p><strong>Steps to publish on Chrome Web Store:</strong></p>
+            <ol>
+                <li>Go to <a href="https://chrome.google.com/webstore/devconsole" target="_blank">Chrome Web Store Developer Dashboard</a></li>
+                <li>Pay the $5 one-time registration fee (if first time)</li>
+                <li>Click "New Item" and upload your extension ZIP file</li>
+                <li>Upload all these promotional images</li>
+                <li>Fill in the store listing with the copy provided above</li>
+                <li>Submit for review (usually takes 1-3 days)</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function drawSmallTile(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            
+            // Gradient background
+            const gradient = ctx.createLinearGradient(0, 0, 440, 280);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 440, 280);
+            
+            // Title
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 48px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Seasonal Spark', 220, 100);
+            
+            // Emoji decorations
+            ctx.font = '60px Arial';
+            ctx.fillText('🍂', 80, 140);
+            ctx.fillText('❄️', 360, 140);
+            ctx.fillText('🌸', 80, 240);
+            ctx.fillText('☀️', 360, 240);
+            
+            // Tagline
+            ctx.font = '20px Arial';
+            ctx.fillText('Seasonal Magic for Your Browser', 220, 180);
+        }
+
+        function drawScreenshot(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            
+            // White background (simulating a webpage)
+            ctx.fillStyle = '#f5f5f5';
+            ctx.fillRect(0, 0, 1280, 800);
+            
+            // Top bar (browser-like)
+            ctx.fillStyle = '#e0e0e0';
+            ctx.fillRect(0, 0, 1280, 60);
+            
+            // Content area
+            ctx.fillStyle = 'white';
+            ctx.fillRect(50, 100, 1180, 650);
+            
+            // Text content simulation
+            ctx.fillStyle = '#333';
+            ctx.font = '32px Arial';
+            ctx.fillText('Example Webpage', 100, 160);
+            
+            ctx.font = '18px Arial';
+            ctx.fillStyle = '#666';
+            ctx.fillText('Experience beautiful seasonal effects while browsing...', 100, 220);
+            
+            // Falling leaves effect representation
+            ctx.font = '40px Arial';
+            ctx.fillText('🍂', 200, 300);
+            ctx.fillText('🍂', 600, 450);
+            ctx.fillText('🍂', 950, 350);
+            
+            // Tip box
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.fillRect(900, 600, 300, 80);
+            ctx.fillStyle = 'white';
+            ctx.font = '16px Arial';
+            ctx.fillText('Take a walk in the', 920, 635);
+            ctx.fillText('crisp air 🍂', 920, 660);
+            
+            // Info overlay
+            const infoGradient = ctx.createLinearGradient(0, 700, 0, 800);
+            infoGradient.addColorStop(0, 'rgba(102, 126, 234, 0.95)');
+            infoGradient.addColorStop(1, 'rgba(118, 75, 162, 0.95)');
+            ctx.fillStyle = infoGradient;
+            ctx.fillRect(0, 700, 1280, 100);
+            
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 28px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('✨ Beautiful Seasonal Effects on Every Page', 640, 750);
+        }
+
+        function drawMarquee(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            
+            // Gradient background
+            const gradient = ctx.createLinearGradient(0, 0, 1400, 560);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(0.5, '#764ba2');
+            gradient.addColorStop(1, '#667eea');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 1400, 560);
+            
+            // Title
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 80px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Seasonal Spark', 700, 180);
+            
+            // Subtitle
+            ctx.font = '32px Arial';
+            ctx.fillText('Bring Seasonal Magic to Your Browser', 700, 250);
+            
+            // Four seasons emojis
+            ctx.font = '100px Arial';
+            ctx.fillText('🍂', 250, 420);
+            ctx.fillText('❄️', 550, 420);
+            ctx.fillText('🌸', 850, 420);
+            ctx.fillText('☀️', 1150, 420);
+            
+            // Labels
+            ctx.font = '20px Arial';
+            ctx.fillText('Fall', 250, 500);
+            ctx.fillText('Winter', 550, 500);
+            ctx.fillText('Spring', 850, 500);
+            ctx.fillText('Summer', 1150, 500);
+        }
+
+        function downloadAsset(canvasId, filename) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function copyText(element) {
+            const text = element.textContent.trim();
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = element.nextElementSibling;
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.background = '#4caf50';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            });
+        }
+
+        window.onload = function() {
+            drawSmallTile('smallTile');
+            drawScreenshot('screenshot1');
+            drawMarquee('marquee');
+        };
+    </script>
+</body>
+</html>
