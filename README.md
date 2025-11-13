@@ -9,8 +9,14 @@ A browser extension that enhances your browsing experience with seasonal visual 
   - **Winter**: Gentle snowflakes falling
   - **Spring**: Blooming flowers
   - **Summer**: Bright sunshine
-- **💡 Uplifting Tips**: Seasonal reminders and mindful messages
+  - **Rain**: Raindrops (when weather mode detects rain) �
+- **�💡 Uplifting Tips**: Seasonal reminders and mindful messages
 - **⚙️ Customizable**: Toggle effects on/off with a simple popup menu
+- **🌍 Hemisphere Detection**: Automatically adapts seasons for Southern Hemisphere
+- **☁️ Weather Mode** (Optional): Use real-time weather instead of calendar
+  - Requires free API key from OpenWeatherMap
+  - Shows rain effects when it's actually raining
+  - Temperature-based season detection
 - **🎨 Non-intrusive**: Effects don't interfere with page interaction
 - **💾 Remembers Preferences**: Your settings are saved automatically
 
@@ -38,11 +44,29 @@ A browser extension that enhances your browsing experience with seasonal visual 
 
 ## 📖 How to Use
 
-1. **Automatic Effects**: Once installed, the extension automatically detects the current season and displays appropriate effects on any webpage you visit.
+### Basic Mode (Calendar-Based)
+1. **Automatic Effects**: Once installed, the extension automatically detects the current season based on your calendar and displays appropriate effects on any webpage you visit.
 
 2. **Toggle Effects**: Click the Seasonal Spark icon in your browser toolbar to open the popup menu. Use the toggle switch to turn effects on or off.
 
-3. **Enjoy**: Browse the web with a seasonal touch!
+### Weather Mode (Optional)
+Enable real-time weather-based effects:
+
+1. **Get API Key**: 
+   - Sign up for free at [OpenWeatherMap](https://openweathermap.org/api)
+   - Get your free API key (1000 calls/day included)
+
+2. **Enable Weather Mode**:
+   - Click the extension icon
+   - Toggle "Use Real Weather" ON
+   - Enter your API key
+   - Click "Get My Location" to allow location access
+   
+3. **Enjoy**: Now effects match your actual weather! See rain effects when it's raining, snow when it's snowing, etc.
+
+### Hemisphere Settings
+- **Auto-detect**: Automatically determines your hemisphere from timezone
+- **Manual Override**: Choose Northern or Southern hemisphere manually
 
 ## 🛠️ Project Structure
 

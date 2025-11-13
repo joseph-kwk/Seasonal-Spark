@@ -6,6 +6,7 @@
 </head>
 <body>
   <h1>Seasonal Spark</h1>
+  
   <div class="setting">
     <label for="effects-toggle">Enable Seasonal Effects</label>
     <label class="switch">
@@ -13,6 +14,47 @@
       <span class="slider round"></span>
     </label>
   </div>
+
+  <div class="setting">
+    <label for="weather-mode">Use Real Weather</label>
+    <label class="switch">
+      <input type="checkbox" id="weather-mode">
+      <span class="slider round"></span>
+    </label>
+  </div>
+
+  <div id="weather-setup" style="display: none;">
+    <div class="info-box">
+      <p style="margin: 5px 0; font-size: 12px;">Weather mode requires:</p>
+      <ol style="margin: 5px 0; padding-left: 20px; font-size: 11px;">
+        <li>Free API key from <a href="https://openweathermap.org/api" target="_blank">OpenWeatherMap</a></li>
+        <li>Your location permission</li>
+      </ol>
+    </div>
+    
+    <div class="input-group">
+      <label for="api-key">API Key:</label>
+      <input type="text" id="api-key" placeholder="Enter your API key">
+      <button id="save-api-key">Save</button>
+    </div>
+    
+    <button id="get-location">📍 Get My Location</button>
+    <p id="location-status" style="font-size: 11px; color: #666; margin: 5px 0;"></p>
+  </div>
+
+  <div class="setting">
+    <label for="hemisphere">Hemisphere:</label>
+    <select id="hemisphere">
+      <option value="auto">Auto-detect</option>
+      <option value="northern">Northern</option>
+      <option value="southern">Southern</option>
+    </select>
+  </div>
+
+  <div id="current-season" style="margin-top: 15px; padding: 10px; background: #f0f0f0; border-radius: 5px; text-align: center; font-size: 12px;">
+    <strong>Current Mode:</strong> <span id="season-display">Loading...</span>
+  </div>
+
   <script src="popup.js"></script>
 </body>
 </html>

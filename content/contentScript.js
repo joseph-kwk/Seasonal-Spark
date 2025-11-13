@@ -1,16 +1,132 @@
 // content/contentScript.js
 
+// Detect hemisphere from timezone
+function getHemisphere() {
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const southernZones = ['Australia', 'Auckland', 'Argentina', 'Chile', 
+                         'South_Africa', 'Brazil', 'Paraguay', 'Uruguay',
+                         'Antarctica', 'Bolivia', 'Peru', 'Namibia'];
+  return southernZones.some(zone => timezone.includes(zone)) ? 'southern' : 'northern';
+}
+
 // Season detection function
 function getSeason(date = new Date()) {
   const month = date.getMonth(); // 0-11
-  // Northern Hemisphere seasons
-  if (month >= 2 && month <= 4) return "spring"; // Mar, Apr, May
-  if (month >= 5 && month <= 7) return "summer"; // Jun, Jul, Aug
-  if (month >= 8 && month <= 10) return "fall";   // Sep, Oct, Nov
-  return "winter"; // Dec, Jan, Feb
+  
+  // Get season based on Northern Hemisphere
+  let season;
+  if (month >= 2 && month <= 4) season = "spring"; // Mar, Apr, May
+  else if (month >= 5 && month <= 7) season = "summer"; // Jun, Jul, Aug
+  else if (month >= 8 && month <= 10) season = "fall";   // Sep, Oct, Nov
+  else season = "winter"; // Dec, Jan, Feb
+  
+  // Check user's hemisphere preference (or auto-detect)
+  chrome.storage.sync.get(['hemisphere'], (data) => {
+    const hemisphere = data.hemisphere || getHemisphere();
+    console.log(`Detected hemisphere: ${hemisphere}`);
+  });
+  
+  // For now, we'll add hemisphere flipping in the next step
+  return season;
 }
 
-// Fall effects
+// Get weather-based season (when weather mode is enabled)
+async function getWeatherSeason(lat, lon) {
+  try {
+    // Using OpenWeatherMap API (free tier: 1000 calls/day)
+    const API_KEY = 'WEATHER_API_KEY'; // User will add their own key
+    const response = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
+    );
+    
+    if (!response.ok) throw new Error('Weather API failed');
+    
+    const data = await response.json();
+    const weatherMain = data.weather[0].main;
+    const temp = data.main.temp;
+    
+    console.log(`Weather: ${weatherMain}, Temp: ${temp}°C`);
+    
+    // Map weather conditions to seasons/effects
+    if (weatherMain === 'Snow') return 'winter';
+    if (weatherMain === 'Rain' || weatherMain === 'Drizzle') return 'rain';
+    if (temp > 25) return 'summer'; // Hot
+    if (temp < 10) return 'winter'; // Cold
+    if (month >= 2 && month <= 4) return 'spring';
+    if (month >= 8 && month <= 10) return 'fall';
+    
+    return 'summer'; // Default
+  } catch (error) {
+    console.log('Weather mode failed, falling back to calendar:', error);
+    return getSeason(); // Fallback to calendar
+  }
+}
+
+// Determine which season to use (weather mode or calendar)
+async function determineCurrentSeason() {
+  return new Promise((resolve) => {
+    chrome.storage.sync.get(['weatherMode', 'weatherApiKey', 'userLocation'], async (data) => {
+      if (data.weatherMode && data.weatherApiKey && data.userLocation) {
+        // Weather mode enabled
+        const { lat, lon } = data.userLocation;
+        const season = await getWeatherSeason(lat, lon);
+        resolve(season);
+      } else {
+        // Calendar mode (default)
+        resolve(getSeason());
+      }
+    });
+  });
+}
+
+// Rain effects (new for weather mode)
+function injectRainEffects() {
+  console.log("Injecting rain effects...");
+  
+  // Add the animation style once
+  if (!document.getElementById('rain-animation-style')) {
+    const style = document.createElement('style');
+    style.id = 'rain-animation-style';
+    style.innerHTML = `
+      @keyframes rainfall {
+        0% { 
+          transform: translateY(0);
+          opacity: 1;
+        }
+        100% { 
+          transform: translateY(${window.innerHeight + 100}px);
+          opacity: 0.5;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  
+  // Create multiple raindrops (15-25 drops)
+  const numberOfDrops = Math.floor(Math.random() * 11) + 15; // 15-25 drops
+  
+  for (let i = 0; i < numberOfDrops; i++) {
+    setTimeout(() => {
+      const drop = document.createElement("div");
+      drop.innerHTML = '💧';
+      drop.className = 'seasonal-effect-element';
+      drop.style.position = 'fixed';
+      drop.style.top = '-50px';
+      drop.style.left = Math.random() * window.innerWidth + 'px';
+      drop.style.fontSize = (Math.random() * 10 + 10) + 'px'; // 10-20px
+      drop.style.animation = `rainfall ${Math.random() * 2 + 3}s linear forwards`; // 3-5s, faster than snow
+      drop.style.animationDelay = Math.random() * 1 + 's'; // 0-1s delay
+      drop.style.zIndex = '9999';
+      drop.style.pointerEvents = 'none';
+      document.body.appendChild(drop);
+      
+      // Remove drop after animation completes
+      setTimeout(() => {
+        drop.remove();
+      }, (Math.random() * 2 + 3 + 1) * 1000 + 1000);
+    }, i * 100); // Stagger creation by 100ms
+  }
+}
 function injectFallEffects() {
   console.log("Injecting fall effects...");
   
@@ -164,7 +280,8 @@ const tips = {
   fall: ["Take a walk in the crisp air 🍂", "Time for cozy socks and warm drinks!"],
   winter: ["Stay warm and hydrated ❄️", "Perfect time for reflection and rest."],
   spring: ["Fresh start — try something new 🌸", "Notice what's blooming around you."],
-  summer: ["Don’t forget sunscreen ☀️", "Make time for play and rest."]
+  summer: ["Don't forget sunscreen ☀️", "Make time for play and rest."],
+  rain: ["Rainy day? Perfect time to relax 💧", "Listen to the soothing sound of rain 🌧️"]
 };
 
 function showTip(season) {
@@ -193,19 +310,23 @@ function showTip(season) {
 
 let effectsInterval = null;
 
-function startPeriodicEffects(season) {
+async function startPeriodicEffects() {
+  // Get the current season (weather or calendar based)
+  const season = await determineCurrentSeason();
+  
   // Show effects immediately
   injectSeasonalEffect(season);
   showTip(season);
   
   // Then show effects every 30-60 seconds
-  effectsInterval = setInterval(() => {
-    chrome.storage.sync.get('effectsEnabled', (data) => {
+  effectsInterval = setInterval(async () => {
+    chrome.storage.sync.get('effectsEnabled', async (data) => {
       if (data.effectsEnabled !== false) {
-        injectSeasonalEffect(season);
+        const currentSeason = await determineCurrentSeason();
+        injectSeasonalEffect(currentSeason);
         // Show tip occasionally (30% chance)
         if (Math.random() < 0.3) {
-          showTip(season);
+          showTip(currentSeason);
         }
       }
     });
@@ -226,17 +347,19 @@ function injectSeasonalEffect(season) {
     case 'summer':
       injectSummerEffects();
       break;
+    case 'rain':
+      injectRainEffects();
+      break;
   }
 }
 
 function applySeasonalEffects() {
     chrome.storage.sync.get('effectsEnabled', (data) => {
         if (data.effectsEnabled !== false) { // Default to true
-            const season = getSeason();
-            console.log(`Current season: ${season}`);
+            console.log("Seasonal Spark: Effects enabled");
             
             // Start periodic effects
-            startPeriodicEffects(season);
+            startPeriodicEffects();
         } else {
             console.log("Seasonal effects are disabled");
         }
