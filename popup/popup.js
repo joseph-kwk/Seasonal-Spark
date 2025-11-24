@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const locationStatus = document.getElementById('location-status');
   const hemisphereSelect = document.getElementById('hemisphere');
   const seasonDisplay = document.getElementById('season-display');
+  const blockSiteBtn = document.getElementById('block-site');
 
   // Load saved settings
   chrome.storage.sync.get([
@@ -15,7 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
     'weatherMode', 
     'weatherApiKey', 
     'userLocation',
-    'hemisphere'
+    'hemisphere',
+    'blockedSites'
   ], (data) => {
     effectsToggle.checked = data.effectsEnabled !== false;
     weatherMode.checked = data.weatherMode || false;
@@ -32,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     updateSeasonDisplay(data);
+    updateBlockButton(data.blockedSites);
   });
 
   // Toggle effects
@@ -135,6 +138,57 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
   });
+
+  // Block/Unblock Site
+  blockSiteBtn.addEventListener('click', () => {
+    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+      if (!tabs[0] || !tabs[0].url) return;
+      
+      const url = new URL(tabs[0].url);
+      const hostname = url.hostname;
+      
+      chrome.storage.sync.get(['blockedSites'], (data) => {
+        let blockedSites = data.blockedSites || [];
+        
+        if (blockedSites.includes(hostname)) {
+          // Unblock
+          blockedSites = blockedSites.filter(site => site !== hostname);
+          blockSiteBtn.textContent = 'Block';
+          blockSiteBtn.style.background = '#f44336';
+        } else {
+          // Block
+          blockedSites.push(hostname);
+          blockSiteBtn.textContent = 'Unblock';
+          blockSiteBtn.style.background = '#4caf50';
+        }
+        
+        chrome.storage.sync.set({ blockedSites }, () => {
+          chrome.tabs.reload(tabs[0].id);
+        });
+      });
+    });
+  });
+
+  function updateBlockButton(blockedSites) {
+    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+      if (!tabs[0] || !tabs[0].url) return;
+      
+      try {
+        const url = new URL(tabs[0].url);
+        const hostname = url.hostname;
+        
+        if (blockedSites && blockedSites.includes(hostname)) {
+          blockSiteBtn.textContent = 'Unblock';
+          blockSiteBtn.style.background = '#4caf50';
+        } else {
+          blockSiteBtn.textContent = 'Block';
+          blockSiteBtn.style.background = '#f44336';
+        }
+      } catch (e) {
+        blockSiteBtn.style.display = 'none'; // Hide on non-web pages
+      }
+    });
+  }
 
   // Update season display
   function updateSeasonDisplay(data) {

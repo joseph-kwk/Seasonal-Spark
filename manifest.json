@@ -3,7 +3,10 @@
   "name": "Seasonal Spark",
   "version": "1.0",
   "description": "Adds seasonal effects and uplifting tips to your browser.",
-  "permissions": ["storage", "activeTab", "scripting"],
+  "permissions": ["storage", "activeTab"],
+  "host_permissions": [
+    "https://api.openweathermap.org/*"
+  ],
   "background": {
     "service_worker": "background.js"
   },
