@@ -9,8 +9,61 @@ function getHemisphere() {
   return southernZones.some(zone => timezone.includes(zone)) ? 'southern' : 'northern';
 }
 
+// Helper to calculate Easter date (Meeus/Jones/Butcher's algorithm)
+function getEasterDate(year) {
+    const f = Math.floor,
+        G = year % 19,
+        C = f(year / 100),
+        H = (C - f(C / 4) - f((8 * C + 13) / 25) + 19 * G + 15) % 30,
+        I = H - f(H / 28) * (1 - f(29 / (H + 1)) * f((21 - G) / 11)),
+        J = (year + f(year / 4) + I + 2 - C + f(C / 4)) % 7,
+        L = I - J,
+        month = 3 + f((L + 40) / 44),
+        day = L + 28 - 31 * f(month / 4);
+
+    return { month: month - 1, day: day }; // Month is 0-indexed
+}
+
+// Helper to calculate Thanksgiving date (4th Thursday in Nov)
+function getThanksgivingDate(year) {
+    const nov1 = new Date(year, 10, 1);
+    const day = nov1.getDay(); // 0 (Sun) to 6 (Sat)
+    const diff = (4 - day + 7) % 7; // Days to next Thursday
+    const firstThursday = 1 + diff;
+    return firstThursday + 21; // 4th Thursday
+}
+
+// Check for holidays
+function getHoliday(date = new Date()) {
+    const month = date.getMonth();
+    const day = date.getDate();
+    const year = date.getFullYear();
+
+    // Christmas: Dec 1 - Dec 31
+    if (month === 11) return 'christmas';
+
+    // Thanksgiving: Week of Thanksgiving (Mon-Sun)
+    const thanksgivingDay = getThanksgivingDate(year);
+    // Thanksgiving "season" is the week leading up to it + the day
+    if (month === 10 && day >= thanksgivingDay - 7 && day <= thanksgivingDay) return 'thanksgiving';
+
+    // Easter: Week of Easter
+    const easter = getEasterDate(year);
+    const currentTs = new Date(year, month, day).getTime();
+    const easterTs = new Date(year, easter.month, easter.day).getTime();
+    const diffDays = (currentTs - easterTs) / (1000 * 60 * 60 * 24);
+    
+    if (Math.abs(diffDays) <= 4) return 'easter'; // 4 days around Easter
+
+    return null;
+}
+
 // Season detection function
 function getSeason(date = new Date()) {
+  // Check for holiday first
+  const holiday = getHoliday(date);
+  if (holiday) return holiday;
+
   const month = date.getMonth(); // 0-11
   
   // Get season based on Northern Hemisphere
@@ -127,6 +180,114 @@ function injectRainEffects() {
     }, i * 100); // Stagger creation by 100ms
   }
 }
+
+// Christmas effects
+function injectChristmasEffects() {
+  console.log("Injecting Christmas effects...");
+  
+  // Add snow style if not exists
+  if (!document.getElementById('snow-animation-style')) {
+    const style = document.createElement('style');
+    style.id = 'snow-animation-style';
+    style.innerHTML = `
+      @keyframes snowfall {
+        0% { transform: translateY(0) translateX(0); opacity: 1; }
+        100% { transform: translateY(${window.innerHeight + 100}px) translateX(50px); opacity: 0.3; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // Mix of snowflakes and holiday emojis
+  const emojis = ['❄️', '🎄', '🎅', '🎁', '🦌'];
+  const numberOfItems = Math.floor(Math.random() * 8) + 8;
+  
+  for (let i = 0; i < numberOfItems; i++) {
+    setTimeout(() => {
+      const item = document.createElement("div");
+      item.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+      item.className = 'seasonal-effect-element';
+      item.style.position = 'fixed';
+      item.style.top = '-50px';
+      item.style.left = Math.random() * window.innerWidth + 'px';
+      item.style.fontSize = (Math.random() * 15 + 15) + 'px';
+      item.style.animation = `snowfall ${Math.random() * 5 + 10}s linear forwards`;
+      item.style.zIndex = '9999';
+      item.style.pointerEvents = 'none';
+      document.body.appendChild(item);
+      
+      setTimeout(() => item.remove(), 15000);
+    }, i * 200);
+  }
+}
+
+// Thanksgiving effects
+function injectThanksgivingEffects() {
+  console.log("Injecting Thanksgiving effects...");
+  
+  // Use fall animation style
+  if (!document.getElementById('fall-animation-style')) {
+    const style = document.createElement('style');
+    style.id = 'fall-animation-style';
+    style.innerHTML = `
+      @keyframes fall {
+        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(${window.innerHeight + 100}px) rotate(360deg); opacity: 0.3; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  const emojis = ['🍂', '🦃', '🥧', '🌽', '🧡'];
+  const numberOfItems = Math.floor(Math.random() * 6) + 5;
+  
+  for (let i = 0; i < numberOfItems; i++) {
+    setTimeout(() => {
+      const item = document.createElement("div");
+      item.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+      item.className = 'seasonal-effect-element';
+      item.style.position = 'fixed';
+      item.style.top = '-50px';
+      item.style.left = Math.random() * window.innerWidth + 'px';
+      item.style.fontSize = (Math.random() * 15 + 15) + 'px';
+      item.style.animation = `fall ${Math.random() * 5 + 8}s linear forwards`;
+      item.style.zIndex = '9999';
+      item.style.pointerEvents = 'none';
+      document.body.appendChild(item);
+      
+      setTimeout(() => item.remove(), 15000);
+    }, i * 300);
+  }
+}
+
+// Easter effects
+function injectEasterEffects() {
+  console.log("Injecting Easter effects...");
+  
+  const emojis = ['🐰', '🥚', '🐣', '🌸', '🌷'];
+  const numberOfItems = Math.floor(Math.random() * 5) + 5;
+  
+  for (let i = 0; i < numberOfItems; i++) {
+    const item = document.createElement("div");
+    item.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+    item.className = 'seasonal-effect-element';
+    item.style.position = 'fixed';
+    item.style.top = Math.random() * window.innerHeight + 'px';
+    item.style.left = Math.random() * window.innerWidth + 'px';
+    item.style.fontSize = '25px';
+    item.style.zIndex = '9999';
+    item.style.pointerEvents = 'none';
+    item.style.opacity = '0.9';
+    document.body.appendChild(item);
+    
+    setTimeout(() => {
+      item.style.transition = 'opacity 2s';
+      item.style.opacity = '0';
+      setTimeout(() => item.remove(), 2000);
+    }, Math.random() * 4000 + 8000);
+  }
+}
+
 function injectFallEffects() {
   console.log("Injecting fall effects...");
   
@@ -281,7 +442,10 @@ const tips = {
   winter: ["Stay warm and hydrated ❄️", "Perfect time for reflection and rest."],
   spring: ["Fresh start — try something new 🌸", "Notice what's blooming around you."],
   summer: ["Don't forget sunscreen ☀️", "Make time for play and rest."],
-  rain: ["Rainy day? Perfect time to relax 💧", "Listen to the soothing sound of rain 🌧️"]
+  rain: ["Rainy day? Perfect time to relax 💧", "Listen to the soothing sound of rain 🌧️"],
+  christmas: ["Merry Christmas! 🎄", "Spread some holiday cheer! 🎅", "Wishing you joy and peace 🎁"],
+  thanksgiving: ["Happy Thanksgiving! 🦃", "Time for gratitude and pie 🥧", "Gather with loved ones 🧡"],
+  easter: ["Happy Easter! 🐰", "New beginnings are blooming 🌸", "Have an egg-cellent day! 🥚"]
 };
 
 function showTip(season) {
@@ -349,6 +513,15 @@ function injectSeasonalEffect(season) {
       break;
     case 'rain':
       injectRainEffects();
+      break;
+    case 'christmas':
+      injectChristmasEffects();
+      break;
+    case 'thanksgiving':
+      injectThanksgivingEffects();
+      break;
+    case 'easter':
+      injectEasterEffects();
       break;
   }
 }
