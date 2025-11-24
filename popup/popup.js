@@ -47,8 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (!enabled) {
       // Reload tabs to switch back to calendar mode
-      chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-        if (tabs[0]) chrome.tabs.reload(tabs[0].id);
+      chrome.tabs.query({}, (tabs) => {
+        tabs.forEach(tab => chrome.tabs.reload(tab.id));
       });
     }
   });
@@ -58,7 +58,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const apiKey = apiKeyInput.value.trim();
     if (apiKey) {
       chrome.storage.sync.set({ weatherApiKey: apiKey }, () => {
-        alert('API key saved!');
+        const btn = saveApiKeyBtn;
+        const originalText = btn.textContent;
+        btn.textContent = 'Saved!';
+        btn.style.backgroundColor = '#4caf50';
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.style.backgroundColor = '';
+        }, 2000);
       });
     } else {
       alert('Please enter an API key');
@@ -92,8 +99,8 @@ document.addEventListener('DOMContentLoaded', () => {
               locationStatus.style.color = '#4caf50';
               
               // Reload tabs to apply weather mode
-              chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-                if (tabs[0]) chrome.tabs.reload(tabs[0].id);
+              chrome.tabs.query({}, (tabs) => {
+                tabs.forEach(tab => chrome.tabs.reload(tab.id));
               });
             });
           } else {
@@ -121,7 +128,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Hemisphere selection
   hemisphereSelect.addEventListener('change', () => {
-    chrome.storage.sync.set({ hemisphere: hemisphereSelect.value });
+    chrome.storage.sync.set({ hemisphere: hemisphereSelect.value }, () => {
+        // Reload tabs to apply hemisphere change
+        chrome.tabs.query({}, (tabs) => {
+            tabs.forEach(tab => chrome.tabs.reload(tab.id));
+        });
+    });
   });
 
   // Update season display

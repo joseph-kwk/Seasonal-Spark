@@ -59,37 +59,39 @@ function getHoliday(date = new Date()) {
 }
 
 // Season detection function
-function getSeason(date = new Date()) {
+function getSeason(date = new Date(), hemisphere = 'northern') {
   // Check for holiday first
   const holiday = getHoliday(date);
   if (holiday) return holiday;
 
   const month = date.getMonth(); // 0-11
   
-  // Get season based on Northern Hemisphere
   let season;
-  if (month >= 2 && month <= 4) season = "spring"; // Mar, Apr, May
-  else if (month >= 5 && month <= 7) season = "summer"; // Jun, Jul, Aug
-  else if (month >= 8 && month <= 10) season = "fall";   // Sep, Oct, Nov
-  else season = "winter"; // Dec, Jan, Feb
   
-  // Check user's hemisphere preference (or auto-detect)
-  chrome.storage.sync.get(['hemisphere'], (data) => {
-    const hemisphere = data.hemisphere || getHemisphere();
-    console.log(`Detected hemisphere: ${hemisphere}`);
-  });
+  if (hemisphere === 'southern') {
+    // Southern Hemisphere Seasons
+    if (month >= 2 && month <= 4) season = "fall";      // Mar, Apr, May
+    else if (month >= 5 && month <= 7) season = "winter"; // Jun, Jul, Aug
+    else if (month >= 8 && month <= 10) season = "spring"; // Sep, Oct, Nov
+    else season = "summer"; // Dec, Jan, Feb
+  } else {
+    // Northern Hemisphere Seasons (Default)
+    if (month >= 2 && month <= 4) season = "spring";    // Mar, Apr, May
+    else if (month >= 5 && month <= 7) season = "summer"; // Jun, Jul, Aug
+    else if (month >= 8 && month <= 10) season = "fall";  // Sep, Oct, Nov
+    else season = "winter"; // Dec, Jan, Feb
+  }
   
-  // For now, we'll add hemisphere flipping in the next step
   return season;
 }
 
 // Get weather-based season (when weather mode is enabled)
-async function getWeatherSeason(lat, lon) {
+async function getWeatherSeason(lat, lon, apiKey) {
   try {
-    // Using OpenWeatherMap API (free tier: 1000 calls/day)
-    const API_KEY = 'WEATHER_API_KEY'; // User will add their own key
+    if (!apiKey) throw new Error('No API key provided');
+
     const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
     );
     
     if (!response.ok) throw new Error('Weather API failed');
@@ -97,36 +99,52 @@ async function getWeatherSeason(lat, lon) {
     const data = await response.json();
     const weatherMain = data.weather[0].main;
     const temp = data.main.temp;
+    const month = new Date().getMonth();
     
     console.log(`Weather: ${weatherMain}, Temp: ${temp}°C`);
     
     // Map weather conditions to seasons/effects
     if (weatherMain === 'Snow') return 'winter';
-    if (weatherMain === 'Rain' || weatherMain === 'Drizzle') return 'rain';
-    if (temp > 25) return 'summer'; // Hot
-    if (temp < 10) return 'winter'; // Cold
-    if (month >= 2 && month <= 4) return 'spring';
-    if (month >= 8 && month <= 10) return 'fall';
+    if (weatherMain === 'Rain' || weatherMain === 'Drizzle' || weatherMain === 'Thunderstorm') return 'rain';
     
-    return 'summer'; // Default
+    // Temperature based overrides
+    if (temp > 28) return 'summer'; // Very Hot
+    if (temp < 5) return 'winter';  // Very Cold
+    
+    // Fallback to calendar season if weather is mild/ambiguous
+    // We need to know the hemisphere here too, but for simplicity, we'll default to Northern logic for the fallback
+    // or better, just return a default based on temp
+    if (temp >= 15 && temp <= 28) {
+        if (month >= 2 && month <= 5) return 'spring';
+        if (month >= 8 && month <= 11) return 'fall';
+        return 'summer';
+    }
+    
+    return 'spring'; // Default mild
   } catch (error) {
     console.log('Weather mode failed, falling back to calendar:', error);
-    return getSeason(); // Fallback to calendar
+    // We can't easily fallback to getSeason with hemisphere here without passing it down, 
+    // so we'll return null and let the caller handle it or just default.
+    return 'fall'; // Safe default
   }
 }
 
 // Determine which season to use (weather mode or calendar)
 async function determineCurrentSeason() {
   return new Promise((resolve) => {
-    chrome.storage.sync.get(['weatherMode', 'weatherApiKey', 'userLocation'], async (data) => {
+    chrome.storage.sync.get(['weatherMode', 'weatherApiKey', 'userLocation', 'hemisphere'], async (data) => {
+      // Determine hemisphere first
+      const hemisphere = data.hemisphere === 'auto' || !data.hemisphere ? getHemisphere() : data.hemisphere;
+
       if (data.weatherMode && data.weatherApiKey && data.userLocation) {
         // Weather mode enabled
         const { lat, lon } = data.userLocation;
-        const season = await getWeatherSeason(lat, lon);
+        // Pass the API key from storage
+        const season = await getWeatherSeason(lat, lon, data.weatherApiKey);
         resolve(season);
       } else {
         // Calendar mode (default)
-        resolve(getSeason());
+        resolve(getSeason(new Date(), hemisphere));
       }
     });
   });
