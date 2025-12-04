@@ -178,8 +178,8 @@ function injectRainEffects() {
     document.head.appendChild(style);
   }
   
-  // Create multiple raindrops (15-25 drops)
-  const numberOfDrops = Math.floor(Math.random() * 11) + 15; // 15-25 drops
+  // Create fewer raindrops (2-3 drops)
+  const numberOfDrops = Math.floor(Math.random() * 2) + 2; // 2-3 drops
   
   for (let i = 0; i < numberOfDrops; i++) {
     setTimeout(() => {
@@ -189,9 +189,9 @@ function injectRainEffects() {
       drop.style.position = 'fixed';
       drop.style.top = '-50px';
       drop.style.left = Math.random() * window.innerWidth + 'px';
-      drop.style.fontSize = (Math.random() * 10 + 10) + 'px'; // 10-20px
-      drop.style.animation = `rainfall ${Math.random() * 2 + 3}s linear forwards`; // 3-5s, faster than snow
-      drop.style.animationDelay = Math.random() * 1 + 's'; // 0-1s delay
+      drop.style.fontSize = (Math.random() * 20 + 30) + 'px'; // 30-50px
+      drop.style.animation = `rainfall ${Math.random() * 2 + 3}s linear forwards`; // 3-5s
+      drop.style.animationDelay = Math.random() * 0.5 + 's'; // 0-0.5s delay
       drop.style.zIndex = '9999';
       drop.style.pointerEvents = 'none';
       document.body.appendChild(drop);
@@ -200,7 +200,7 @@ function injectRainEffects() {
       setTimeout(() => {
         drop.remove();
       }, (Math.random() * 2 + 3 + 1) * 1000 + 1000);
-    }, i * 100); // Stagger creation by 100ms
+    }, i * 800); // Stagger creation by 800ms
   }
 }
 
@@ -223,7 +223,7 @@ function injectChristmasEffects() {
 
   // Mix of snowflakes and holiday emojis
   const emojis = ['❄️', '🎄', '🎅', '🎁', '🦌'];
-  const numberOfItems = Math.floor(Math.random() * 8) + 8;
+  const numberOfItems = Math.floor(Math.random() * 2) + 2; // 2-3 items
   
   for (let i = 0; i < numberOfItems; i++) {
     setTimeout(() => {
@@ -233,14 +233,14 @@ function injectChristmasEffects() {
       item.style.position = 'fixed';
       item.style.top = '-50px';
       item.style.left = Math.random() * window.innerWidth + 'px';
-      item.style.fontSize = (Math.random() * 15 + 15) + 'px';
+      item.style.fontSize = (Math.random() * 20 + 35) + 'px'; // 35-55px
       item.style.animation = `snowfall ${Math.random() * 5 + 10}s linear forwards`;
       item.style.zIndex = '9999';
       item.style.pointerEvents = 'none';
       document.body.appendChild(item);
       
       setTimeout(() => item.remove(), 15000);
-    }, i * 200);
+    }, i * 1000); // Stagger creation by 1000ms
   }
 }
 
@@ -262,7 +262,7 @@ function injectThanksgivingEffects() {
   }
 
   const emojis = ['🍂', '🦃', '🥧', '🌽', '🧡'];
-  const numberOfItems = Math.floor(Math.random() * 6) + 5;
+  const numberOfItems = Math.floor(Math.random() * 2) + 2; // 2-3 items
   
   for (let i = 0; i < numberOfItems; i++) {
     setTimeout(() => {
@@ -272,14 +272,14 @@ function injectThanksgivingEffects() {
       item.style.position = 'fixed';
       item.style.top = '-50px';
       item.style.left = Math.random() * window.innerWidth + 'px';
-      item.style.fontSize = (Math.random() * 15 + 15) + 'px';
+      item.style.fontSize = (Math.random() * 20 + 35) + 'px'; // 35-55px
       item.style.animation = `fall ${Math.random() * 5 + 8}s linear forwards`;
       item.style.zIndex = '9999';
       item.style.pointerEvents = 'none';
       document.body.appendChild(item);
       
       setTimeout(() => item.remove(), 15000);
-    }, i * 300);
+    }, i * 1000); // Stagger creation by 1000ms
   }
 }
 
@@ -288,7 +288,7 @@ function injectEasterEffects() {
   console.log("Injecting Easter effects...");
   
   const emojis = ['🐰', '🥚', '🐣', '🌸', '🌷'];
-  const numberOfItems = Math.floor(Math.random() * 5) + 5;
+  const numberOfItems = Math.floor(Math.random() * 2) + 2; // 2-3 items
   
   for (let i = 0; i < numberOfItems; i++) {
     const item = document.createElement("div");
@@ -297,7 +297,7 @@ function injectEasterEffects() {
     item.style.position = 'fixed';
     item.style.top = Math.random() * window.innerHeight + 'px';
     item.style.left = Math.random() * window.innerWidth + 'px';
-    item.style.fontSize = '25px';
+    item.style.fontSize = '40px'; // Bigger size
     item.style.zIndex = '9999';
     item.style.pointerEvents = 'none';
     item.style.opacity = '0.9';
@@ -333,8 +333,8 @@ function injectFallEffects() {
     document.head.appendChild(style);
   }
   
-  // Create multiple leaves (5-10 leaves)
-  const numberOfLeaves = Math.floor(Math.random() * 6) + 5; // 5-10 leaves
+  // Create fewer leaves (2-3 leaves)
+  const numberOfLeaves = Math.floor(Math.random() * 2) + 2; // 2-3 leaves
   
   for (let i = 0; i < numberOfLeaves; i++) {
     setTimeout(() => {
@@ -344,9 +344,9 @@ function injectFallEffects() {
       leaf.style.position = 'fixed';
       leaf.style.top = '-50px';
       leaf.style.left = Math.random() * window.innerWidth + 'px';
-      leaf.style.fontSize = (Math.random() * 15 + 15) + 'px'; // 15-30px
-      leaf.style.animation = `fall ${Math.random() * 5 + 8}s linear forwards`; // 8-13s, no loop
-      leaf.style.animationDelay = Math.random() * 2 + 's'; // 0-2s delay
+      leaf.style.fontSize = (Math.random() * 20 + 35) + 'px'; // 35-55px
+      leaf.style.animation = `fall ${Math.random() * 5 + 8}s linear forwards`; // 8-13s
+      leaf.style.animationDelay = Math.random() * 0.5 + 's'; // 0-0.5s delay
       leaf.style.zIndex = '9999';
       leaf.style.pointerEvents = 'none';
       document.body.appendChild(leaf);
@@ -355,7 +355,7 @@ function injectFallEffects() {
       setTimeout(() => {
         leaf.remove();
       }, (Math.random() * 5 + 8 + 2) * 1000 + 1000);
-    }, i * 300); // Stagger creation by 300ms
+    }, i * 1000); // Stagger creation by 1000ms
   }
 }
 
@@ -382,8 +382,8 @@ function injectWinterEffects() {
     document.head.appendChild(style);
   }
   
-  // Create multiple snowflakes (8-15 snowflakes)
-  const numberOfFlakes = Math.floor(Math.random() * 8) + 8; // 8-15 flakes
+  // Create fewer snowflakes (2-3 snowflakes)
+  const numberOfFlakes = Math.floor(Math.random() * 2) + 2; // 2-3 flakes
   
   for (let i = 0; i < numberOfFlakes; i++) {
     setTimeout(() => {
@@ -393,9 +393,9 @@ function injectWinterEffects() {
       snowflake.style.position = 'fixed';
       snowflake.style.top = '-50px';
       snowflake.style.left = Math.random() * window.innerWidth + 'px';
-      snowflake.style.fontSize = (Math.random() * 15 + 12) + 'px'; // 12-27px
-      snowflake.style.animation = `snowfall ${Math.random() * 5 + 10}s linear forwards`; // 10-15s, no loop
-      snowflake.style.animationDelay = Math.random() * 2 + 's'; // 0-2s delay
+      snowflake.style.fontSize = (Math.random() * 20 + 35) + 'px'; // 35-55px
+      snowflake.style.animation = `snowfall ${Math.random() * 5 + 10}s linear forwards`; // 10-15s
+      snowflake.style.animationDelay = Math.random() * 0.5 + 's'; // 0-0.5s delay
       snowflake.style.zIndex = '9999';
       snowflake.style.pointerEvents = 'none';
       document.body.appendChild(snowflake);
@@ -404,7 +404,7 @@ function injectWinterEffects() {
       setTimeout(() => {
         snowflake.remove();
       }, (Math.random() * 5 + 10 + 2) * 1000 + 1000);
-    }, i * 200); // Stagger creation by 200ms
+    }, i * 1000); // Stagger creation by 1000ms
   }
 }
 
@@ -412,8 +412,8 @@ function injectWinterEffects() {
 function injectSpringEffects() {
   console.log("Injecting spring effects...");
   
-  // Create a few flowers (3-5 flowers)
-  const numberOfFlowers = Math.floor(Math.random() * 3) + 3;
+  // Create a few flowers (2-3 flowers)
+  const numberOfFlowers = Math.floor(Math.random() * 2) + 2;
   
   for (let i = 0; i < numberOfFlowers; i++) {
     const flower = document.createElement("div");
@@ -422,7 +422,7 @@ function injectSpringEffects() {
     flower.style.position = 'fixed';
     flower.style.top = Math.random() * window.innerHeight + 'px';
     flower.style.left = Math.random() * window.innerWidth + 'px';
-    flower.style.fontSize = '20px';
+    flower.style.fontSize = '40px'; // Bigger size
     flower.style.zIndex = '9999';
     flower.style.pointerEvents = 'none';
     flower.style.opacity = '0.8';
@@ -446,7 +446,7 @@ function injectSummerEffects() {
   sun.style.position = 'fixed';
   sun.style.top = '20px';
   sun.style.right = '20px';
-  sun.style.fontSize = '40px';
+  sun.style.fontSize = '60px'; // Bigger sun
   sun.style.zIndex = '9999';
   sun.style.pointerEvents = 'none';
   sun.style.opacity = '0.9';
